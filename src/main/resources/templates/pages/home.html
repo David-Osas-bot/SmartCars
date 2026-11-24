@@ -36,6 +36,38 @@
                 .rise, .drift { opacity: 1; animation: none; }
                 html { scroll-behavior: auto; }
             }
+
+            /* Form fields (search bar) */
+            .field-label {
+                display: block;
+                margin-bottom: .5rem;
+                font-size: .75rem;
+                font-weight: 600;
+                letter-spacing: .15em;
+                text-transform: uppercase;
+                color: #525252;
+            }
+            .field-control {
+                height: 60px;
+                width: 100%;
+                border-radius: .5rem;
+                border: 1px solid #e5e5e5;
+                background: #fff;
+                padding: 0 1.25rem;
+                font-size: 1rem;
+                color: #171717;
+                transition: border-color .15s, box-shadow .15s;
+            }
+            .field-control::placeholder { color: #a3a3a3; }
+            .field-control:focus {
+                outline: none;
+                border-color: #000;
+                box-shadow: 0 0 0 3px rgb(0 0 0 / .1);
+            }
+
+            .dark .field-label { color: #a3a3a3; }
+            .dark .field-control { background: #171717; border-color: #262626; color: #fff; }
+            .dark .field-control:focus { border-color: #fff; box-shadow: 0 0 0 3px rgb(255 255 255 / .2); }
         </style>
     </head>
 
@@ -53,7 +85,7 @@
                 <div class="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/70 to-transparent"></div>
                 <div class="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-black to-transparent"></div>
 
-                <div class="mx-auto flex min-h-[inherit] max-w-7xl flex-col justify-center px-6 pb-16 pt-20">
+                <div class="mx-auto flex min-h-[inherit] max-w-7xl flex-col justify-center px-6 pb-40 pt-20">
                     <p class="rise text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-300" style="--i:0">Featured · 2024 Aston Martin</p>
 
                     <h1 class="rise mt-8 font-display text-[clamp(3.5rem,9vw,7.5rem)] leading-[0.95] tracking-tight" style="--i:1">
@@ -79,6 +111,70 @@
                     </dl>
                 </div>
             </section>
+
+
+            <!-- Search -->
+            <section aria-labelledby="searchTitle" class="relative z-10 -mt-[4.8rem]">
+                <div class="mx-auto max-w-7xl px-6">
+                    <form id="searchForm" action="/cars" method="get"
+                          class="rounded-xl bg-white p-5 shadow-2xl ring-1 ring-black/5 dark:bg-neutral-950 dark:ring-white/10">
+                        <h2 id="searchTitle" class="sr-only">Search cars</h2>
+
+                        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-[repeat(4,minmax(0,1fr))_auto] lg:items-end">
+                            <div>
+                                <label for="searchBrand" class="field-label">Brand</label>
+                                <select id="searchBrand" name="brand" class="field-control">
+                                    <option value="">All brands</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="searchModel" class="field-label">Model</label>
+                                <input id="searchModel" name="model" type="text" placeholder="e.g. Land Cruiser"
+                                       autocomplete="off" class="field-control" />
+                            </div>
+
+                            <div>
+                                <label for="searchPrice" class="field-label">Price range</label>
+                                <select id="searchPrice" name="price" class="field-control">
+                                    <option value="">Any price</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="searchYear" class="field-label">Year from</label>
+                                <select id="searchYear" name="year" class="field-control">
+                                    <option value="">Any year</option>
+                                </select>
+                            </div>
+
+                            <button type="submit"
+                                    class="inline-flex h-[60px] items-center justify-center gap-2.5 rounded-lg bg-black px-8 text-lg font-medium text-white transition hover:bg-neutral-800 md:col-span-2 lg:col-span-1 dark:bg-white dark:text-black dark:hover:bg-neutral-200">
+                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/>
+                                </svg>
+                                Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Browse by body type -->
+            <section aria-labelledby="bodyTypeTitle" class="mx-auto max-w-7xl px-6 py-24">
+                <div class="flex items-end justify-between gap-6">
+                    <div>
+                        <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Browse by body type</p>
+                        <h2 id="bodyTypeTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">Find your shape</h2>
+                    </div>
+                    <a href="/signin?next=/cars"
+                       class="hidden pb-2 text-lg font-medium underline decoration-2 underline-offset-8 transition hover:opacity-70 sm:block">
+                        All categories
+                    </a>
+                </div>
+
+                <ul id="bodyTypes" class="mt-12 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4"></ul>
+            </section>
         </main>
 
         <!-- Cookie banner -->
@@ -92,63 +188,6 @@
             </div>
         </aside>
 
-        <!-- Search -->
-        <section aria-labelledby="searchTitle" class="relative z-10 -mt-[4.8rem]">
-            <div class="mx-auto max-w-7xl px-6">
-                <form id="searchForm" action="/cars" method="get"
-                      class="rounded-xl bg-white p-5 shadow-2xl ring-1 ring-black/5 dark:bg-neutral-950 dark:ring-white/10">
-                    <h2 id="searchTitle" class="sr-only">Search cars</h2>
-
-                    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-[repeat(4,minmax(0,1fr))_auto] lg:items-end">
-                        <div>
-                            <label for="searchBrand" class="field-label">Brand</label>
-                            <select id="searchBrand" name="brand" class="field-control">
-                                <option value="">All brands</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="searchModel" class="field-label">Model</label>
-                            <input id="searchModel" name="model" type="text" placeholder="e.g. Land Cruiser"
-                                   autocomplete="off" class="field-control" />
-                        </div>
-
-                        <div>
-                            <label for="searchPrice" class="field-label">Price range</label>
-                            <select id="searchPrice" name="price" class="field-control">
-                                <option value="">Any price</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="searchYear" class="field-label">Year from</label>
-                            <select id="searchYear" name="year" class="field-control">
-                                <option value="">Any year</option>
-                            </select>
-                        </div>
-
-                        <button type="submit"
-                                class="inline-flex h-[60px] items-center justify-center gap-2.5 rounded-lg bg-black px-8 text-lg font-medium text-white transition hover:bg-neutral-800 md:col-span-2 lg:col-span-1 dark:bg-white dark:text-black dark:hover:bg-neutral-200">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/>
-                            </svg>
-                            Search
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </section>
-
-        <!-- Browse by body type -->
-        <section aria-labelledby="bodyTypeTitle" class="mx-auto max-w-7xl px-6 py-24">
-            <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Browse by body type</p>
-            <h2 id="bodyTypeTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">Find your shape</h2>
-
-            <!-- Cards go here once you send the next screenshot -->
-            <ul id="bodyTypes" class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"></ul>
-        </section>
-
         <div th:replace="~{fragments/navbar :: bottomNav}"></div>
-        <script th:src="@{/js/main.js}" defer></script>
     </body>
 </html>

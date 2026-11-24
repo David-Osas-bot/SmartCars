@@ -178,8 +178,6 @@
             setTimeout(() => cookie.classList.add('hidden'), 500);
         });
     }
-})();
-
 
 /* ---------- Search config (swap for fetch('/api/...') later) ---------- */
 const SEARCH = {
@@ -215,4 +213,55 @@ $('#searchForm')?.addEventListener('submit', (e) => {
     });
     const query = params.toString();
     window.location.href = query ? `/cars?${query}` : '/cars';
+
 });
+
+
+    /* ---------- Body type cards ---------- */
+// Visitors must have an account to buy, so every card goes to sign in.
+// "next" tells the sign-in page where to send them afterwards.
+    const ROUTES = { signIn: '/signin' };
+
+    const authLink = (target) => `${ROUTES.signIn}?next=${encodeURIComponent(target)}`;
+
+// category slug -> image file in /static/images/categories
+    const CATEGORY_IMAGES = {
+        suvs: 'car-suv',
+        sedans: 'car-sedan',
+        coupes: 'car-coupe',
+        luxury: 'hero-car',
+        electric: 'car-electric',
+        pickups: 'car-pickup',
+        convertibles: 'car-convertible',
+        certified: 'car-sedan', // no dedicated file yet, reusing the sedan
+    };
+
+    const categoryImage = (slug) => `/images/categories/${CATEGORY_IMAGES[slug] ?? slug}.jpg`;
+
+    const bodyTypeCard = ({ name, slug, count }) => `
+    <li>
+      <a href="${authLink(`/cars?category=${slug}`)}"
+         class="group relative block aspect-[4/3] overflow-hidden rounded-xl bg-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black dark:bg-neutral-800 dark:focus-visible:outline-white">
+
+        <img src="${categoryImage(slug)}" alt="" loading="lazy"
+             class="absolute inset-0 h-full w-full object-cover grayscale transition duration-700 ease-out group-hover:scale-105"
+             onerror="this.style.display='none'" />
+
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent transition-opacity duration-500 group-hover:opacity-90"></div>
+
+        <div class="absolute inset-x-0 bottom-0 flex items-end justify-between p-4 text-white sm:p-5">
+          <div>
+            <h3 class="text-lg font-semibold leading-tight sm:text-xl">${name}</h3>
+            <p class="mt-1 text-sm text-neutral-300">${count} available</p>
+          </div>
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/50 transition duration-300 group-hover:border-white group-hover:bg-white group-hover:text-black">
+            <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+    </li>`;
+
+    fill('#bodyTypes', NAV.categories.map(bodyTypeCard).join(''));
+
+
+})();
