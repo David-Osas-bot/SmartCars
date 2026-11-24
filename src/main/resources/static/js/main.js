@@ -263,5 +263,141 @@ $('#searchForm')?.addEventListener('submit', (e) => {
 
     fill('#bodyTypes', NAV.categories.map(bodyTypeCard).join(''));
 
+    /* ---------- New arrivals carousel ---------- */
+    // Placeholder data (swap for fetch('/api/cars/new') when your backend is ready)
+    const IMG_BASE = '/images/categories';
+    const CARS = [
+        { id: 1, brand: 'Aston Martin', year: 2024, name: 'Aston Martin DB12', trim: 'DB12 Coupe', rating: 5, reviews: 8, km: 150, fuel: 'Petrol', gearbox: 'Automatic', price: 298000000, city: 'Lagos', badge: 'New arrival', image: 'hero-car' },
+        { id: 2, brand: 'Range Rover', year: 2024, name: 'Range Rover Autobiography', trim: 'Autobiography LWB', rating: 5, reviews: 36, km: 800, fuel: 'Hybrid', gearbox: 'Automatic', price: 245000000, city: 'Abuja', badge: 'New arrival', image: 'car-suv' },
+        { id: 3, brand: 'Mercedes-Benz', year: 2024, name: 'Mercedes-Benz S 580', trim: 'S 580 4MATIC', rating: 5, reviews: 48, km: 1200, fuel: 'Petrol', gearbox: 'Automatic', price: 185000000, city: 'Lagos', badge: 'Best seller', image: 'car-sedan' },
+        { id: 4, brand: 'BMW', year: 2024, name: 'BMW X7 M60i', trim: 'X7 M60i xDrive', rating: 5, reviews: 27, km: 900, fuel: 'Petrol', gearbox: 'Automatic', price: 162000000, city: 'Lagos', image: 'car-suv' },
+        { id: 5, brand: 'Toyota', year: 2023, name: 'Toyota Land Cruiser', trim: 'LC300 VX', rating: 5, reviews: 52, km: 4200, fuel: 'Petrol', gearbox: 'Automatic', price: 142000000, city: 'Lagos', image: 'car-suv' },
+        { id: 6, brand: 'Porsche', year: 2024, name: 'Porsche 911 Carrera', trim: '911 Carrera S', rating: 5, reviews: 14, km: 600, fuel: 'Petrol', gearbox: 'Automatic', price: 210000000, city: 'Abuja', badge: 'New arrival', image: 'car-coupe' },
+        { id: 7, brand: 'Tesla', year: 2024, name: 'Tesla Model S', trim: 'Model S Plaid', rating: 4, reviews: 19, km: 1100, fuel: 'Electric', gearbox: 'Automatic', price: 120000000, city: 'Lagos', image: 'car-electric' },
+        { id: 8, brand: 'Lexus', year: 2023, name: 'Lexus LX 600', trim: 'LX 600 Ultra Luxury', rating: 5, reviews: 31, km: 3500, fuel: 'Petrol', gearbox: 'Automatic', price: 175000000, city: 'Port Harcourt', image: 'car-suv' },
+    ];
 
+    const naira = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 });
+
+    // Icons (stroke style, same look as the rest of the site)
+    const ICONS = {
+        heart: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+        gauge: '<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>',
+        fuel: '<line x1="3" x2="15" y1="22" y2="22"/><line x1="4" x2="14" y1="9" y2="9"/><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"/><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2 2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5"/>',
+        gear: '<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+        pin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+        compare: '<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/>',
+    };
+
+    const icon = (name, size = 'h-4 w-4') =>
+        `<svg class="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
+
+    const stars = (rating) => `
+        <span class="flex" role="img" aria-label="Rated ${rating} out of 5">
+          ${Array.from({ length: 5 }, (_, i) => `
+            <svg class="h-3.5 w-3.5 ${i < rating ? 'text-black dark:text-white' : 'text-neutral-300 dark:text-neutral-700'}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>`).join('')}
+        </span>`;
+
+    // Public page: every action leads to sign in. On the dashboard, swap these links for real handlers.
+    const carCard = (car, itemClass = '') => {
+        const link = authLink(`/cars/${car.id}`);
+        const spec = (name, text) => `<span class="flex items-center gap-1.5">${icon(name, 'h-3.5 w-3.5')}${text}</span>`;
+
+        return `
+    <li class="${itemClass}">
+      <article class="group flex h-full flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white transition duration-300 ease-out hover:-translate-y-1.5 hover:border-neutral-300 hover:bg-neutral-50 hover:shadow-xl hover:shadow-black/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0 dark:border-neutral-800 dark:bg-neutral-950 dark:hover:border-neutral-600 dark:hover:bg-neutral-900 dark:hover:shadow-black/50">
+
+        <div class="relative aspect-[3/2] overflow-hidden bg-neutral-200 dark:bg-neutral-800">
+          <a href="${link}" aria-label="View ${car.name}">
+            <img src="${IMG_BASE}/${car.image}.jpg" alt="${car.name}" loading="lazy"
+                 class="h-full w-full object-cover grayscale transition duration-700 ease-out group-hover:scale-105"
+                 onerror="this.style.display='none'" />
+          </a>
+          ${car.badge ? `<span class="absolute left-3 top-3 rounded bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-black">${car.badge}</span>` : ''}
+          <a href="${link}" aria-label="Save ${car.name}"
+             class="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-black transition hover:scale-105 hover:bg-white">
+            ${icon('heart', 'h-[18px] w-[18px]')}
+          </a>
+        </div>
+
+        <div class="flex flex-1 flex-col p-5">
+          <div class="flex items-center justify-between text-sm text-neutral-500 dark:text-neutral-400">
+            <span>${car.brand} · ${car.year}</span>
+            <span class="flex items-center gap-1.5">${stars(car.rating)}<span>(${car.reviews})</span></span>
+          </div>
+
+          <h3 class="mt-3 text-lg font-semibold leading-tight"><a href="${link}">${car.name}</a></h3>
+          <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">${car.trim}</p>
+
+          <div class="mt-4 flex items-center justify-between border-y border-neutral-200 py-3 text-[13px] text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
+            ${spec('gauge', `${car.km.toLocaleString('en-NG')} km`)}
+            ${spec('fuel', car.fuel)}
+            ${spec('gear', car.gearbox)}
+          </div>
+
+          <div class="mt-4 flex items-center justify-between">
+            <p class="text-2xl font-semibold tracking-tight">${naira.format(car.price)}</p>
+            <span class="flex items-center gap-1 text-sm text-neutral-500 dark:text-neutral-400">${icon('pin', 'h-3.5 w-3.5')}${car.city}</span>
+          </div>
+
+          <div class="mt-4 grid grid-cols-5 gap-2">
+            <a href="${link}" class="col-span-3 flex h-10 items-center justify-center rounded-lg bg-black text-sm font-medium text-white transition hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200">Add to cart</a>
+            <a href="${link}" class="col-span-2 flex h-10 items-center justify-center gap-2 rounded-lg border border-neutral-200 text-sm font-medium shadow-sm transition hover:bg-neutral-100 dark:border-neutral-800 dark:hover:bg-neutral-900">${icon('compare')}Compare</a>
+          </div>
+        </div>
+      </article>
+    </li>`;
+    };
+
+    // Slide widths live here (not in carCard) so the Best sellers grid can reuse the same card
+    const SLIDE = 'w-full shrink-0 snap-start sm:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-3rem)/4)]';
+
+    fill('#arrivalsTrack', CARS.map((car) => carCard(car, SLIDE)).join(''));
+    // Arrow controls: move one card at a time, disable at either end
+    const track = $('#arrivalsTrack');
+    const prevBtn = $('#arrivalsPrev');
+    const nextBtn = $('#arrivalsNext');
+
+    if (track && prevBtn && nextBtn) {
+        const updateArrows = () => {
+            prevBtn.disabled = track.scrollLeft <= 1;
+            nextBtn.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 1;
+        };
+
+        const slide = (direction) => {
+            const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+            const step = track.firstElementChild.offsetWidth + gap;
+            track.scrollBy({ left: direction * step, behavior: 'smooth' });
+        };
+
+        prevBtn.addEventListener('click', () => slide(-1));
+        nextBtn.addEventListener('click', () => slide(1));
+        track.addEventListener('scroll', updateArrows, { passive: true });
+        window.addEventListener('resize', updateArrows);
+        updateArrows();
+    }
+
+    /* ---------- Brand marquee ---------- */
+    const marqueeItem = (brand) => `
+    <li class="shrink-0 px-10 font-display text-3xl tracking-tight text-neutral-600 dark:text-neutral-400 md:text-4xl">${brand}</li>`;
+
+    // Two identical groups: the second is hidden from screen readers and makes the loop seamless
+        const marqueeGroup = (hidden = false) => `
+        <ul class="flex shrink-0 items-center"${hidden ? ' aria-hidden="true"' : ''}>
+          ${NAV.brands.map(marqueeItem).join('')}
+        </ul>`;
+
+    fill('#brandMarquee', marqueeGroup() + marqueeGroup(true));
+
+    // Placeholder data (swap for fetch('/api/cars/best-sellers') when your backend is ready)
+    const BEST_SELLERS = [
+        { id: 9, brand: 'Toyota', year: 2022, name: 'Toyota Camry XSE', trim: 'Camry XSE V6', rating: 5, reviews: 124, km: 28400, fuel: 'Petrol', gearbox: 'Automatic', price: 38500000, city: 'Ibadan', badge: 'Best seller', image: 'car-sedan' },
+        { id: 10, brand: 'Toyota', year: 2024, name: 'Toyota Hilux Legend', trim: 'Hilux Legend 4x4', rating: 5, reviews: 95, km: 0, fuel: 'Diesel', gearbox: 'Manual', price: 52500000, city: 'Kano', image: 'car-pickup' },
+        { id: 11, brand: 'Toyota', year: 2024, name: 'Toyota Land Cruiser 300', trim: 'Land Cruiser VX', rating: 5, reviews: 88, km: 0, fuel: 'Diesel', gearbox: 'Automatic', price: 128000000, city: 'Port Harcourt', badge: 'Best seller', image: 'car-suv' },
+        { id: 12, brand: 'Lexus', year: 2023, name: 'Lexus ES 350', trim: 'ES 350 F Sport', rating: 5, reviews: 66, km: 12000, fuel: 'Petrol', gearbox: 'Automatic', price: 54000000, city: 'Lagos', image: 'car-sedan' },
+    ];
+
+    fill('#bestSellersGrid', BEST_SELLERS.map((car) => carCard(car)).join(''));
 })();

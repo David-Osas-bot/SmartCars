@@ -68,6 +68,21 @@
             .dark .field-label { color: #a3a3a3; }
             .dark .field-control { background: #171717; border-color: #262626; color: #fff; }
             .dark .field-control:focus { border-color: #fff; box-shadow: 0 0 0 3px rgb(255 255 255 / .2); }
+
+            /* Carousel: hide the scrollbar but keep scrolling */
+            .no-scrollbar { scrollbar-width: none; }
+            .no-scrollbar::-webkit-scrollbar { display: none; }
+
+            /* Brand marquee: track holds two identical groups, so -50% loops seamlessly */
+            @keyframes marquee { to { transform: translateX(-50%); } }
+            .marquee-track { animation: marquee 40s linear infinite; }
+            .marquee:hover .marquee-track { animation-play-state: paused; }
+
+            @media (prefers-reduced-motion: reduce) {
+                .rise, .drift { opacity: 1; animation: none; }
+                .marquee-track { animation: none; }
+                html { scroll-behavior: auto; }
+            }
         </style>
     </head>
 
@@ -174,6 +189,51 @@
                 </div>
 
                 <ul id="bodyTypes" class="mt-12 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4"></ul>
+            </section>
+
+            <!-- New arrivals -->
+            <section aria-labelledby="arrivalsTitle" class="mx-auto max-w-7xl px-6 pb-24">
+                <div class="flex items-end justify-between gap-6">
+                    <div>
+                        <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Just landed</p>
+                        <h2 id="arrivalsTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">New arrivals</h2>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button id="arrivalsPrev" type="button" aria-label="Previous cars"
+                                class="flex h-11 w-11 items-center justify-center rounded-full border border-neutral-200 bg-white text-black shadow-sm transition hover:bg-neutral-100 disabled:pointer-events-none disabled:text-neutral-400 dark:border-neutral-800 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:disabled:text-neutral-600">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <button id="arrivalsNext" type="button" aria-label="Next cars"
+                                class="flex h-11 w-11 items-center justify-center rounded-full border border-neutral-200 bg-white text-black shadow-sm transition hover:bg-neutral-100 disabled:pointer-events-none disabled:text-neutral-400 dark:border-neutral-800 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:disabled:text-neutral-600">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <ul id="arrivalsTrack" class="no-scrollbar -mx-4 -mb-8 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto scroll-smooth px-4 pb-10 pt-4"></ul>
+            </section>
+
+            <!-- Brand marquee -->
+            <section aria-label="Brands we carry" class="marquee overflow-hidden border-y border-neutral-200 dark:border-neutral-800">
+                <div id="brandMarquee" class="marquee-track flex w-max py-10"></div>
+            </section>
+
+
+            <!-- Best sellers -->
+            <section aria-labelledby="bestSellersTitle" class="mx-auto max-w-7xl px-6 pb-24">
+                <div class="flex items-end justify-between gap-6">
+                    <div>
+                        <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Most loved</p>
+                        <h2 id="bestSellersTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">Best sellers</h2>
+                    </div>
+                    <a href="/signin?next=/cars"
+                       class="pb-2 text-lg font-medium underline decoration-2 underline-offset-8 transition hover:opacity-70">
+                        See all
+                    </a>
+                </div>
+
+                <ul id="bestSellersGrid" class="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"></ul>
             </section>
         </main>
 
