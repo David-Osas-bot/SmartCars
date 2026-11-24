@@ -1,23 +1,154 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>SmartCars | Drive the extraordinary</title>
 
-    <title>SMARTCARS</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+        <script th:src="@{/js/main.js}" defer></script>
 
-    <link rel="stylesheet" th:href="@{/css/output.css}">
-</head>
+        <!-- Tailwind Play CDN (for prototyping). In your Vite project, install Tailwind and move this config to tailwind.config.js -->
+        <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+        <script>
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ['Inter', 'system-ui', 'sans-serif'],
+                            display: ['"Instrument Serif"', 'Georgia', 'serif'],
+                        },
+                    },
+                },
+            };
+        </script>
 
-<body class="bg-black text-white">
+        <style>
+            /* Hero entrance: one orchestrated sequence, disabled for reduced motion */
+            @keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+            @keyframes drift { from { opacity: 0; transform: scale(1.06); } to { opacity: 1; transform: none; } }
+            .rise { opacity: 0; animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(var(--i, 0) * 120ms + 150ms); }
+            .drift { opacity: 0; animation: drift 1.6s cubic-bezier(.2,.7,.2,1) forwards; }
+            @media (prefers-reduced-motion: reduce) {
+                .rise, .drift { opacity: 1; animation: none; }
+                html { scroll-behavior: auto; }
+            }
+        </style>
+    </head>
 
-<main class="min-h-screen flex items-center justify-center">
+    <body class="bg-white font-sans text-neutral-900 antialiased dark:bg-black dark:text-white pb-16 lg:pb-0">
+        <div th:replace="~{fragments/navbar :: announcement}"></div>
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <h1 class="text-5xl font-bold">
-        Welcome to SMARTCARS
-    </h1>
+        <!-- Hero -->
+        <main>
+            <section class="relative isolate min-h-[calc(100vh-7.5rem)] overflow-hidden bg-black text-white">
+                <!-- Replace with your own image path -->
+                <img src="assets/aston-martin-db12.jpg" alt="Black Aston Martin DB12 in a dark studio"
+                     class="drift absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center] grayscale"
+                     onerror="this.style.display='none'" />
+                <div class="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/70 to-transparent"></div>
+                <div class="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-black to-transparent"></div>
 
-</main>
+                <div class="mx-auto flex min-h-[inherit] max-w-7xl flex-col justify-center px-6 pb-16 pt-20">
+                    <p class="rise text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-300" style="--i:0">Featured · 2024 Aston Martin</p>
 
-</body>
+                    <h1 class="rise mt-8 font-display text-[clamp(3.5rem,9vw,7.5rem)] leading-[0.95] tracking-tight" style="--i:1">
+                        Drive the<br /><em>extraordinary.</em>
+                    </h1>
+
+                    <p class="rise mt-8 max-w-[34rem] text-lg leading-relaxed text-neutral-300 md:text-xl" style="--i:2">
+                        Aston Martin DB12. 671 hp, hand-built, delivered to your door with a 150-point inspection report.
+                    </p>
+
+                    <div class="rise mt-10 flex flex-wrap gap-4" style="--i:3">
+                        <a href="#" class="inline-flex items-center gap-3 rounded-lg bg-white px-8 py-4 text-lg font-medium text-black transition hover:bg-neutral-200">
+                            Explore the DB12
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                        <a href="#" class="inline-flex items-center rounded-lg border border-white/40 px-8 py-4 text-lg font-medium text-white transition hover:border-white hover:bg-white hover:text-black">Browse all cars</a>
+                    </div>
+
+                    <dl class="rise mt-16 grid max-w-2xl grid-cols-3 gap-8 border-t border-white/20 pt-8" style="--i:4">
+                        <div><dt class="sr-only">Cars delivered</dt><dd class="font-display text-4xl md:text-5xl">1,200+</dd><p class="mt-1 text-sm text-neutral-400">Cars delivered</p></div>
+                        <div><dt class="sr-only">Customer rating</dt><dd class="font-display text-4xl md:text-5xl">4.9/5</dd><p class="mt-1 text-sm text-neutral-400">Customer rating</p></div>
+                        <div><dt class="sr-only">Average delivery</dt><dd class="font-display text-4xl md:text-5xl">48h</dd><p class="mt-1 text-sm text-neutral-400">Average delivery</p></div>
+                    </dl>
+                </div>
+            </section>
+        </main>
+
+        <!-- Cookie banner -->
+        <aside id="cookie" role="dialog" aria-live="polite" aria-label="Cookie consent"
+               class="fixed inset-x-4 bottom-20 z-50 mx-auto hidden max-w-3xl translate-y-6 rounded-xl bg-white p-5 text-neutral-900 opacity-0 shadow-2xl transition duration-500 lg:bottom-6">
+            <h2 class="flex items-center gap-2 text-lg font-medium">We use cookies <span aria-hidden="true">🍪</span></h2>
+            <p class="mt-1.5 text-sm text-neutral-600">To remember your cart, saved cars and preferences, and to understand how SmartCars is used.</p>
+            <div class="mt-4 flex flex-wrap gap-3">
+                <button data-consent="all" class="rounded-lg bg-black px-4 py-2.5 text-sm font-medium text-white transition hover:bg-neutral-800">Accept all</button>
+                <button data-consent="essential" class="rounded-lg border border-neutral-200 px-4 py-2.5 text-sm font-medium transition hover:bg-neutral-100">Essential only</button>
+            </div>
+        </aside>
+
+        <!-- Search -->
+        <section aria-labelledby="searchTitle" class="relative z-10 -mt-[4.8rem]">
+            <div class="mx-auto max-w-7xl px-6">
+                <form id="searchForm" action="/cars" method="get"
+                      class="rounded-xl bg-white p-5 shadow-2xl ring-1 ring-black/5 dark:bg-neutral-950 dark:ring-white/10">
+                    <h2 id="searchTitle" class="sr-only">Search cars</h2>
+
+                    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-[repeat(4,minmax(0,1fr))_auto] lg:items-end">
+                        <div>
+                            <label for="searchBrand" class="field-label">Brand</label>
+                            <select id="searchBrand" name="brand" class="field-control">
+                                <option value="">All brands</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="searchModel" class="field-label">Model</label>
+                            <input id="searchModel" name="model" type="text" placeholder="e.g. Land Cruiser"
+                                   autocomplete="off" class="field-control" />
+                        </div>
+
+                        <div>
+                            <label for="searchPrice" class="field-label">Price range</label>
+                            <select id="searchPrice" name="price" class="field-control">
+                                <option value="">Any price</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="searchYear" class="field-label">Year from</label>
+                            <select id="searchYear" name="year" class="field-control">
+                                <option value="">Any year</option>
+                            </select>
+                        </div>
+
+                        <button type="submit"
+                                class="inline-flex h-[60px] items-center justify-center gap-2.5 rounded-lg bg-black px-8 text-lg font-medium text-white transition hover:bg-neutral-800 md:col-span-2 lg:col-span-1 dark:bg-white dark:text-black dark:hover:bg-neutral-200">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/>
+                            </svg>
+                            Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Browse by body type -->
+        <section aria-labelledby="bodyTypeTitle" class="mx-auto max-w-7xl px-6 py-24">
+            <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Browse by body type</p>
+            <h2 id="bodyTypeTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">Find your shape</h2>
+
+            <!-- Cards go here once you send the next screenshot -->
+            <ul id="bodyTypes" class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"></ul>
+        </section>
+
+        <div th:replace="~{fragments/navbar :: bottomNav}"></div>
+        <script th:src="@{/js/main.js}" defer></script>
+    </body>
 </html>
