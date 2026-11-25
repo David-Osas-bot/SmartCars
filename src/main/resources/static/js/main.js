@@ -391,6 +391,28 @@ $('#searchForm')?.addEventListener('submit', (e) => {
 
     fill('#brandMarquee', marqueeGroup() + marqueeGroup(true));
 
+    <!-- Why SmartCars -->
+    <section aria-labelledby="whyTitle" class="bg-neutral-100 dark:bg-neutral-900">
+        <div class="mx-auto max-w-7xl px-6 py-24">
+            <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Why SmartCars</p>
+            <h2 id="whyTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">
+                Buying a car, <em>reimagined.</em>
+            </h2>
+
+            <!-- gap-px on a tinted background draws the dividers at every breakpoint -->
+            <ul id="whyGrid"
+                class="mt-12 grid gap-px overflow-hidden rounded-xl border border-neutral-200 bg-neutral-200 sm:grid-cols-2 lg:grid-cols-4 dark:border-neutral-800 dark:bg-neutral-800"></ul>
+        </div>
+    </section>
+
+    <!-- Owners speak -->
+    <section aria-labelledby="reviewsTitle" class="mx-auto max-w-7xl px-6 py-24">
+        <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Owners speak</p>
+        <h2 id="reviewsTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">Trusted by 1,200+ drivers</h2>
+
+        <ul id="reviewsGrid" class="mt-12 grid gap-6 md:grid-cols-3"></ul>
+    </section>
+
     // Placeholder data (swap for fetch('/api/cars/best-sellers') when your backend is ready)
     const BEST_SELLERS = [
         { id: 9, brand: 'Toyota', year: 2022, name: 'Toyota Camry XSE', trim: 'Camry XSE V6', rating: 5, reviews: 124, km: 28400, fuel: 'Petrol', gearbox: 'Automatic', price: 38500000, city: 'Ibadan', badge: 'Best seller', image: 'car-sedan' },
