@@ -447,4 +447,162 @@ $('#searchForm')?.addEventListener('submit', (e) => {
 
     fill('#whyGrid', WHY_POINTS.map(whyCard).join(''));
     fill('#reviewsGrid', REVIEWS.map(reviewCard).join(''));
+
+
+    /* ---------- FAQ + newsletter ---------- */
+    Object.assign(ICONS, { chevron: '<path d="m6 9 6 6 6-6"/>' });
+
+    // Placeholder copy: adjust to your real policies before launch
+    const FAQS = [
+        {
+            q: 'Are all cars inspected before sale?',
+            a: 'Yes. Every vehicle passes a 150-point inspection by certified engineers before it is listed, covering the engine, transmission, brakes, suspension, electrics, bodywork and interior. The full condition report is attached to each listing as a downloadable file, so you can see exactly what was checked, and what was repaired, before you commit.',
+        },
+        {
+            q: 'Do you offer financing?',
+            a: 'Yes. We partner with leading Nigerian banks to offer plans from 12 to 60 months with as little as 30% down. Use the payment calculator to estimate your monthly instalments, then submit a single application and expect a decision within 48 hours. The value of your trade-in can be applied toward your deposit.',
+        },
+        {
+            q: 'How does delivery work?',
+            a: 'We deliver nationwide within 2–7 working days, and deliveries in Lagos and Abuja are typically completed within 48 hours. Every car is cleaned, fuelled and checked before it leaves us, and you’ll receive tracking updates along the way. You inspect the car on arrival and confirm delivery once you’re happy with it.',
+        },
+        {
+            q: 'Can I trade in my current car?',
+            a: 'Absolutely. Submit your car’s details and photos for an instant estimate, then we confirm the final value at an in-person inspection. If you accept, the amount is deducted from the price of your new car or added to your deposit, and we can collect your old car when we deliver the new one.',
+        },
+        {
+            q: 'What warranty do I get?',
+            a: 'New cars carry the manufacturer’s warranty. Used and certified cars include a 12-month SmartCars warranty covering major mechanical and electrical components, extendable to 36 months. The full terms, exclusions and claims process are included in your purchase documents, and our support team can walk you through them.',
+        },
+        {
+            q: 'Which payment methods are accepted?',
+            a: 'We accept card payments, bank transfer, USSD and mobile money through Paystack, as well as direct bank financing. For high-value purchases we recommend bank transfer. Every payment is confirmed with an official receipt and invoice before delivery is scheduled.',
+        },
+        {
+            q: 'Do I need an account to buy a car?',
+            a: 'You can browse every listing without signing in. To save cars, compare models, add a car to your cart or place an order, you’ll need a free SmartCars account. It lets us verify your details, keep your documents and payments in one place, and track your order from purchase to delivery.',
+        },
+        {
+            q: 'Can I see a car before I buy it?',
+            a: 'Yes. You can book a viewing or request a video walkthrough from your account, and you’re welcome to bring your own mechanic. The inspection report is always available beforehand, so you know exactly what to look at when you see the car in person.',
+        },
+    ];
+
+    // Each item: a button (question) + a collapsible panel (answer)
+    const faqItem = ({ q, a }, i) => `
+    <li data-open="false" class="group border-b border-neutral-200 dark:border-neutral-800">
+      <h3>
+        <button type="button" id="faqBtn${i}" aria-expanded="false" aria-controls="faqPanel${i}"
+                class="flex w-full items-center justify-between gap-6 py-6 text-left text-lg font-medium underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black dark:focus-visible:outline-white">
+          <span>${q}</span>
+          ${icon('chevron', 'h-5 w-5 shrink-0 text-neutral-500 transition-transform duration-300 group-data-[open=true]:rotate-180')}
+        </button>
+      </h3>
+      <div id="faqPanel${i}" role="region" aria-labelledby="faqBtn${i}" inert
+           class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out group-data-[open=true]:grid-rows-[1fr]">
+        <div class="overflow-hidden">
+          <p class="pb-6 pr-8 text-[17px] leading-7 text-neutral-600 dark:text-neutral-400">${a}</p>
+        </div>
+      </div>
+    </li>`;
+
+    const faqList = $('#faqList');
+    fill('#faqList', FAQS.map(faqItem).join(''));
+
+    const setFaq = (item, open) => {
+        item.dataset.open = String(open);
+        item.querySelector('button').setAttribute('aria-expanded', String(open));
+        item.querySelector('[role="region"]').inert = !open;   // keeps closed answers out of tab order
+    };
+
+    // One open at a time; clicking the open one closes it
+    faqList?.addEventListener('click', (e) => {
+        const item = e.target.closest('li');
+        if (!item || !e.target.closest('button')) return;
+        const willOpen = item.dataset.open !== 'true';
+        faqList.querySelectorAll('li').forEach((li) => setFaq(li, li === item && willOpen));
+    });
+
+    /* ---------- Newsletter forms (FAQ + footer) ---------- */
+    document.querySelectorAll('[data-newsletter]').forEach((form) => {
+        const message = form.querySelector('[data-newsletter-msg]');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = String(new FormData(form).get('email') ?? '').trim();
+            const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+            message.textContent = valid ? 'Thanks! You’re on the list.' : 'Please enter a valid email address.';
+            message.dataset.error = String(!valid);
+            message.classList.remove('hidden');
+            if (valid) form.reset();
+            // TODO: POST the email to your backend (e.g. /api/newsletter) here
+        });
+    });
+
+    /* ---------- Footer ---------- */
+    Object.assign(ICONS, {
+        instagram: '<rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>',
+        twitter: '<path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>',
+        facebook: '<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>',
+        youtube: '<path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/>',
+        linkedin: '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>',
+    });
+
+    const FOOTER_LINKS = [
+        { title: 'Shop', links: [
+                { label: 'All cars', href: '/cars' },
+                { label: 'Compare', href: '/compare' },
+                { label: 'Financing', href: '/finance' },
+                { label: 'Trade-in', href: '/trade-in' },
+            ] },
+        { title: 'Company', links: [
+                { label: 'About SmartCars', href: '/about' },
+                { label: 'Contact', href: '/contact' },
+                { label: 'Careers', href: '/careers' },
+                { label: 'Blog', href: '/blog' },
+            ] },
+        { title: 'Support', links: [
+                { label: 'Help centre', href: '/help' },
+                { label: 'FAQs', href: '/faq' },
+                { label: 'Delivery &amp; returns', href: '/delivery' },
+                { label: 'Privacy &amp; terms', href: '/privacy' },
+            ] },
+    ];
+
+    const PAYMENT_METHODS = ['Paystack', 'Visa', 'Mastercard', 'Verve', 'USSD', 'Bank transfer'];
+
+    // TODO: replace "#" with your real profile URLs
+    const SOCIALS = [
+        { name: 'Instagram', icon: 'instagram', href: '#' },
+        { name: 'Twitter', icon: 'twitter', href: '#' },
+        { name: 'Facebook', icon: 'facebook', href: '#' },
+        { name: 'YouTube', icon: 'youtube', href: '#' },
+        { name: 'LinkedIn', icon: 'linkedin', href: '#' },
+    ];
+
+    const footerColumn = ({ title, links }) => `
+    <div>
+      <h3 class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-500">${title}</h3>
+      <ul class="mt-6 space-y-2">
+        ${links.map(({ label, href }) => `
+        <li><a href="${href}" class="text-[17px] leading-7 text-neutral-300 transition hover:text-white">${label}</a></li>`).join('')}
+      </ul>
+    </div>`;
+
+    const paymentChip = (name) => `
+    <li class="rounded border border-white/20 px-2.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-neutral-200">${name}</li>`;
+
+    const socialLink = ({ name, icon: key, href }) => `
+    <li>
+      <a href="${href}" target="_blank" rel="noopener noreferrer" aria-label="${name}"
+         class="block text-neutral-400 transition hover:text-white">${icon(key, 'h-5 w-5')}</a>
+    </li>`;
+
+    fill('#footerNav', FOOTER_LINKS.map(footerColumn).join(''));
+    fill('#footerPayments', PAYMENT_METHODS.map(paymentChip).join(''));
+    fill('#footerSocials', SOCIALS.map(socialLink).join(''));
+
+    const footerYear = $('#footerYear');
+    if (footerYear) footerYear.textContent = new Date().getFullYear();
 })();
