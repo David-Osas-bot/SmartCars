@@ -391,28 +391,6 @@ $('#searchForm')?.addEventListener('submit', (e) => {
 
     fill('#brandMarquee', marqueeGroup() + marqueeGroup(true));
 
-    <!-- Why SmartCars -->
-    <section aria-labelledby="whyTitle" class="bg-neutral-100 dark:bg-neutral-900">
-        <div class="mx-auto max-w-7xl px-6 py-24">
-            <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Why SmartCars</p>
-            <h2 id="whyTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">
-                Buying a car, <em>reimagined.</em>
-            </h2>
-
-            <!-- gap-px on a tinted background draws the dividers at every breakpoint -->
-            <ul id="whyGrid"
-                class="mt-12 grid gap-px overflow-hidden rounded-xl border border-neutral-200 bg-neutral-200 sm:grid-cols-2 lg:grid-cols-4 dark:border-neutral-800 dark:bg-neutral-800"></ul>
-        </div>
-    </section>
-
-    <!-- Owners speak -->
-    <section aria-labelledby="reviewsTitle" class="mx-auto max-w-7xl px-6 py-24">
-        <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Owners speak</p>
-        <h2 id="reviewsTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">Trusted by 1,200+ drivers</h2>
-
-        <ul id="reviewsGrid" class="mt-12 grid gap-6 md:grid-cols-3"></ul>
-    </section>
-
     // Placeholder data (swap for fetch('/api/cars/best-sellers') when your backend is ready)
     const BEST_SELLERS = [
         { id: 9, brand: 'Toyota', year: 2022, name: 'Toyota Camry XSE', trim: 'Camry XSE V6', rating: 5, reviews: 124, km: 28400, fuel: 'Petrol', gearbox: 'Automatic', price: 38500000, city: 'Ibadan', badge: 'Best seller', image: 'car-sedan' },
@@ -422,4 +400,51 @@ $('#searchForm')?.addEventListener('submit', (e) => {
     ];
 
     fill('#bestSellersGrid', BEST_SELLERS.map((car) => carCard(car)).join(''));
+
+    /* ---------- Why SmartCars + Owners speak ---------- */
+    // Placeholder content (swap for real data or a CMS later)
+    Object.assign(ICONS, {
+        shield: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+        clipboard: '<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/>',
+        bank: '<line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/>',
+        truck: '<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
+        quote: '<path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/>',
+    });
+
+    const WHY_POINTS = [
+        { icon: 'shield', title: '12-month warranty', text: 'Every used and certified car is covered, extendable to 36 months.' },
+        { icon: 'clipboard', title: '150-point inspection', text: 'Engine to upholstery, documented with a downloadable report.' },
+        { icon: 'bank', title: 'Flexible financing', text: '12–60 month plans from leading banks, decisions in 48 hours.' },
+        { icon: 'truck', title: 'Delivered to you', text: 'Nationwide delivery, 48 hours in Lagos and Abuja.' },
+    ];
+
+    const REVIEWS = [
+        { name: 'Ngozi Eze', detail: 'Bought a Lexus LX 600', rating: 5, quote: 'The most transparent car purchase I’ve ever made. Every detail was documented before I paid a kobo.' },
+        { name: 'Ibrahim Musa', detail: 'Bought a Toyota Land Cruiser', rating: 5, quote: 'Delivered to Abuja in 48 hours with a full tank and a handwritten note. That’s class.' },
+        { name: 'Folake Adeyemi', detail: 'Traded in & upgraded', rating: 5, quote: 'Got a fair trade-in value instantly and drove away in a certified Camry the same week.' },
+    ];
+
+    // Cells are white on a tinted grid; the 1px gap between them draws the dividers
+    const whyCard = ({ icon: name, title, text }) => `
+    <li class="bg-white p-10 dark:bg-neutral-950">
+      ${icon(name, 'h-7 w-7')}
+      <h3 class="mt-8 text-[22px] font-semibold leading-tight tracking-tight">${title}</h3>
+      <p class="mt-3 text-[17px] leading-7 text-neutral-600 dark:text-neutral-400">${text}</p>
+    </li>`;
+
+    const reviewCard = ({ name, detail, rating, quote }) => `
+    <li class="flex flex-col rounded-xl border border-neutral-200 bg-white p-8 dark:border-neutral-800 dark:bg-neutral-950">
+      ${icon('quote', 'h-7 w-7')}
+      <blockquote class="mt-6 flex-1 font-display text-[1.75rem] leading-[1.45] tracking-tight">“${quote}”</blockquote>
+      <footer class="mt-8 flex items-center justify-between border-t border-neutral-200 pt-6 dark:border-neutral-800">
+        <div>
+          <p class="font-semibold">${name}</p>
+          <p class="text-sm text-neutral-500 dark:text-neutral-400">${detail}</p>
+        </div>
+        ${stars(rating)}
+      </footer>
+    </li>`;
+
+    fill('#whyGrid', WHY_POINTS.map(whyCard).join(''));
+    fill('#reviewsGrid', REVIEWS.map(reviewCard).join(''));
 })();
