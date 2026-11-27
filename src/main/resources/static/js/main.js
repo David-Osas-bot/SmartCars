@@ -8,6 +8,9 @@
         set: (key, value) => { try { localStorage.setItem(key, value); } catch { /* ignore */ } },
     };
 
+    // main.js
+    // const ROUTES = { signIn: '/auth/sign-in' };
+
     /* ---------- Nav data (swap for a fetch('/api/...') when your backend is ready) ---------- */
     const NAV = {
         totalCars: 16,
@@ -250,11 +253,11 @@ $('#searchForm')?.addEventListener('submit', (e) => {
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent transition-opacity duration-500 group-hover:opacity-90"></div>
 
         <div class="absolute inset-x-0 bottom-0 flex items-end justify-between p-4 text-white sm:p-5">
-          <div>
-            <h3 class="text-lg font-semibold leading-tight sm:text-xl">${name}</h3>
+          <div class="min-w-0 pr-2">
+            <h3 class="text-base font-semibold leading-tight sm:text-xl">${name}</h3>
             <p class="mt-1 text-sm text-neutral-300">${count} available</p>
           </div>
-          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/50 transition duration-300 group-hover:border-white group-hover:bg-white group-hover:text-black">
+          <span class="flex h-9 w-9 shrink-0 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/50 transition duration-300 group-hover:border-white group-hover:bg-white group-hover:text-black">
             <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
         </div>
@@ -605,4 +608,20 @@ $('#searchForm')?.addEventListener('submit', (e) => {
 
     const footerYear = $('#footerYear');
     if (footerYear) footerYear.textContent = new Date().getFullYear();
+
+    /* ---------- Mobile search bar toggle ---------- */
+    const searchToggle = $('#searchToggle');
+    const mobileSearchBar = $('#mobileSearchBar');
+
+    searchToggle?.addEventListener('click', () => {
+        const open = searchToggle.getAttribute('aria-expanded') !== 'true';
+        searchToggle.setAttribute('aria-expanded', String(open));
+        mobileSearchBar.classList.toggle('hidden', !open);
+        if (open) $('#mobileSearch')?.focus();
+    });
+
+    /* ---------- Bottom tab bar: highlight the current page ---------- */
+    document.querySelectorAll('[data-tab]').forEach((tab) => {
+        if (tab.dataset.tab === location.pathname) tab.setAttribute('aria-current', 'page');
+    });
 })();
