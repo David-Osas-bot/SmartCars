@@ -1,11 +1,12 @@
 <!--
-  SmartCars navbar fragments (no custom CSS needed: utilities only)
+  SmartCars landing-page navbar fragments (utilities only, no custom CSS needed)
   Place at: src/main/resources/templates/fragments/navbar.html
   Use in a page:
     <div th:replace="~{fragments/navbar :: announcement}"></div>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
-    ... page content ...
-    <div th:replace="~{fragments/navbar :: bottomNav}"></div>
+
+  The mobile bottom tab bar is NOT here: it belongs to the signed-in dashboard
+  (see fragments/dashboard-bottom-nav.html).
 -->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
@@ -16,9 +17,9 @@
     <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 text-[13px] sm:px-6">
         <p class="truncate">Free nationwide delivery on orders this month · 150-point inspection on every car</p>
         <nav class="hidden gap-5 text-neutral-300 md:flex" aria-label="Utility">
-            <a href="#" class="transition hover:text-white">Financing</a>
-            <a href="#" class="transition hover:text-white">Help centre</a>
-            <a href="#" class="transition hover:text-white">Admin</a>
+            <a href="/finance" class="transition hover:text-white">Financing</a>
+            <a href="/help" class="transition hover:text-white">Help centre</a>
+            <a href="/admin" class="transition hover:text-white">Admin</a>
         </nav>
     </div>
 </div>
@@ -30,12 +31,12 @@
 
             <!-- Hamburger (mobile / tablet) -->
             <button id="menuBtn" type="button" class="grid h-10 w-10 shrink-0 place-items-center rounded-lg transition hover:bg-neutral-100 dark:hover:bg-neutral-900 lg:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
-                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
             </button>
 
-            <!-- Logo -->
+            <!-- Logo (the SC mark is hidden on phones to leave room for Sign in) -->
             <a href="/" class="flex shrink-0 items-center gap-2.5" aria-label="SmartCars home">
-                <span class="hidden h-10 w-10 place-items-center rounded-lg transition hover:bg-neutral-100 dark:hover:bg-neutral-900 sm:grid">SC</span>
+                <span class="hidden h-10 w-10 place-items-center rounded-lg bg-black text-sm font-semibold text-white dark:bg-white dark:text-black sm:grid">SC</span>
                 <span class="text-xl font-medium tracking-tight">Smart<span class="font-display text-[1.4rem] italic">Cars</span></span>
             </a>
 
@@ -44,7 +45,7 @@
                 <div id="shopMenu" class="relative">
                     <button id="shopBtn" type="button" class="flex items-center gap-1.5 transition hover:opacity-70" aria-expanded="false" aria-controls="megaPanel" aria-haspopup="true">
                         Shop
-                        <svg id="shopChevron" class="h-4 w-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <svg id="shopChevron" class="h-4 w-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
 
                     <!-- Mega menu (pt-4 keeps the hover area continuous between button and card) -->
@@ -62,15 +63,15 @@
                         </div>
                     </div>
                 </div>
-                <a href="#" class="transition hover:opacity-70">New</a>
-                <a href="#" class="transition hover:opacity-70">Certified</a>
-                <a href="#" class="transition hover:opacity-70">Finance</a>
+                <a href="/cars?condition=new" class="transition hover:opacity-70">New</a>
+                <a href="/cars?category=certified" class="transition hover:opacity-70">Certified</a>
+                <a href="/finance" class="transition hover:opacity-70">Finance</a>
             </nav>
 
             <!-- Desktop search -->
             <form role="search" action="/cars" class="relative ml-auto hidden min-w-0 max-w-[34rem] flex-1 lg:block">
-                <svg class="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-neutral-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
-                <input id="search" name="q" type="search" placeholder="Search brand, model or body type…" autocomplete="off"
+                <svg class="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-neutral-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
+                <input id="search" name="q" type="search" placeholder="Search brand, model or body type…" autocomplete="off" aria-label="Search cars"
                        class="h-12 w-full rounded-lg border border-neutral-200 bg-neutral-50 pl-11 pr-10 text-[15px] outline-none transition placeholder:text-neutral-500 focus:border-black focus:bg-white focus:ring-2 focus:ring-black/10 dark:border-neutral-800 dark:bg-neutral-950 dark:focus:border-white dark:focus:bg-black dark:focus:ring-white/20" />
                 <kbd class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 rounded border border-neutral-200 bg-white px-1.5 text-xs text-neutral-500 dark:border-neutral-700 dark:bg-neutral-900">/</kbd>
             </form>
@@ -80,47 +81,50 @@
 
                 <!-- Search toggle (mobile / tablet) -->
                 <button id="searchToggle" type="button" class="grid h-10 w-10 place-items-center rounded-lg transition hover:bg-neutral-100 dark:hover:bg-neutral-900 lg:hidden" aria-label="Search" aria-expanded="false" aria-controls="mobileSearchBar">
-                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
+                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
                 </button>
 
                 <!-- Language / currency -->
                 <button type="button" class="hidden h-10 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium transition hover:bg-neutral-100 dark:hover:bg-neutral-900 xl:flex" aria-label="Language and currency">
-                    <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3Z"/></svg>
+                    <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3Z"/></svg>
                     EN · ₦
                 </button>
 
-                <!-- Theme -->
-                <button id="themeBtn" type="button" class="grid h-10 w-10 place-items-center rounded-lg transition hover:bg-neutral-100 dark:hover:bg-neutral-900" aria-label="Toggle dark mode">
-                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg>
+                <!-- Theme (phones use the toggle inside the drawer) -->
+                <button id="themeBtn" type="button" class="hidden h-10 w-10 place-items-center rounded-lg transition hover:bg-neutral-100 dark:hover:bg-neutral-900 sm:grid" aria-label="Toggle dark mode">
+                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg>
                 </button>
 
                 <!-- Notifications (tablet and up) -->
                 <button type="button" class="relative hidden h-10 w-10 place-items-center rounded-lg transition hover:bg-neutral-100 dark:hover:bg-neutral-900 md:grid" aria-label="Notifications, 3 unread">
-                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9ZM10.3 21a1.9 1.9 0 0 0 3.4 0" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9ZM10.3 21a1.9 1.9 0 0 0 3.4 0" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span class="absolute right-0 top-0 grid h-5 min-w-5 place-items-center rounded-full border-2 border-white bg-black px-1 text-[11px] font-semibold leading-none text-white dark:border-black dark:bg-white dark:text-black">3</span>
                 </button>
 
-                <!-- Wishlist -->
-                <a href="/saved" class="grid h-10 w-10 place-items-center rounded-lg transition hover:bg-neutral-100 dark:hover:bg-neutral-900" aria-label="Wishlist">
-                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20s-7.5-4.6-9-9.5C2 7.3 4.2 5 6.8 5c1.9 0 3.4 1 5.2 3 1.8-2 3.3-3 5.2-3C19.8 5 22 7.3 21 10.5 19.5 15.4 12 20 12 20Z" stroke-linejoin="round"/></svg>
+                <!-- Wishlist (visitors are sent to sign in first) -->
+                <a href="/auth/sign-in?next=%2Fsaved" class="hidden h-10 w-10 place-items-center rounded-lg transition hover:bg-neutral-100 dark:hover:bg-neutral-900 sm:grid" aria-label="Wishlist">
+                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 20s-7.5-4.6-9-9.5C2 7.3 4.2 5 6.8 5c1.9 0 3.4 1 5.2 3 1.8-2 3.3-3 5.2-3C19.8 5 22 7.3 21 10.5 19.5 15.4 12 20 12 20Z" stroke-linejoin="round"/></svg>
                 </a>
 
-                <!-- Cart -->
-                <a href="/cart" class="relative hidden h-10 w-10 place-items-center rounded-lg transition hover:bg-neutral-100 dark:hover:bg-neutral-900 sm:grid" aria-label="Cart, 2 items">
-                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 8h14l-1 12H6L5 8ZM9 8V7a3 3 0 0 1 6 0v1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <!-- Cart (visitors are sent to sign in first) -->
+                <a href="/auth/sign-in?next=%2Fcart" class="relative hidden h-10 w-10 place-items-center rounded-lg transition hover:bg-neutral-100 dark:hover:bg-neutral-900 sm:grid" aria-label="Cart, 2 items">
+                    <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8ZM9 8V7a3 3 0 0 1 6 0v1" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span class="absolute right-0 top-0 grid h-5 min-w-5 place-items-center rounded-full border-2 border-white bg-black px-1 text-[11px] font-semibold leading-none text-white dark:border-black dark:bg-white dark:text-black">2</span>
                 </a>
 
-                <!-- Sign in (desktop) -->
-                <a href="/auth/sign-in" class="ml-2 hidden h-11 items-center rounded-lg bg-black px-5 text-[15px] font-medium text-white transition hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200 lg:inline-flex">Sign in</a>
+                <!-- Sign in: visible on every screen size (the bottom tab bar used to be the only way in on phones) -->
+                <a href="/auth/sign-in"
+                   class="ml-1 inline-flex h-10 items-center rounded-lg bg-black px-4 text-sm font-medium text-white transition hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200 sm:ml-2 lg:h-11 lg:px-5 lg:text-[15px]">
+                    Sign in
+                </a>
             </div>
         </div>
 
         <!-- Mobile search bar (toggled by the search icon) -->
         <form id="mobileSearchBar" role="search" action="/cars" class="hidden border-t border-neutral-200 px-4 py-3 dark:border-neutral-800 lg:hidden">
             <div class="relative">
-                <svg class="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-neutral-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
-                <input id="mobileSearch" name="q" type="search" placeholder="Search brand, model or body type…" autocomplete="off"
+                <svg class="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-neutral-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
+                <input id="mobileSearch" name="q" type="search" placeholder="Search brand, model or body type…" autocomplete="off" aria-label="Search cars"
                        class="h-12 w-full rounded-lg border border-neutral-200 bg-neutral-50 pl-11 pr-4 text-base outline-none placeholder:text-neutral-500 focus:border-black focus:ring-2 focus:ring-black/10 dark:border-neutral-800 dark:bg-neutral-900 dark:focus:border-white dark:focus:ring-white/20" />
             </div>
         </form>
@@ -140,7 +144,7 @@
                     <span class="text-xl font-medium tracking-tight">Smart<span class="font-display text-[1.4rem] italic">Cars</span></span>
                 </a>
                 <button id="drawerClose" type="button" class="grid h-10 w-10 place-items-center rounded-lg border border-neutral-300 transition hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-900" aria-label="Close menu">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg>
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"/></svg>
                 </button>
             </div>
 
@@ -152,46 +156,30 @@
             <nav aria-label="More">
                 <a href="/cars" class="block py-3 text-[17px]">All cars</a>
                 <a href="/compare" class="block py-3 text-[17px]">Compare</a>
-                <a href="/financing" class="block py-3 text-[17px]">Financing &amp; trade-in</a>
+                <a href="/finance" class="block py-3 text-[17px]">Financing &amp; trade-in</a>
                 <a href="/help" class="block py-3 text-[17px]">Help centre</a>
                 <a href="/admin" class="block py-3 text-[17px]">Admin portal</a>
             </nav>
+
+            <!-- Account + theme (pinned to the bottom of the drawer) -->
+            <div class="mt-auto space-y-3 pt-8">
+                <a href="/auth/sign-in"
+                   class="flex h-12 items-center justify-center rounded-lg bg-black text-base font-medium text-white transition hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200">
+                    Sign in
+                </a>
+                <a href="/auth/sign-up"
+                   class="flex h-12 items-center justify-center rounded-lg border border-neutral-300 text-base font-medium transition hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-900">
+                    Create account
+                </a>
+                <button id="themeBtnMobile" type="button"
+                        class="flex h-12 w-full items-center justify-between rounded-lg px-1 text-base transition hover:opacity-70">
+                    Dark mode
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
         </aside>
     </div>
 </div>
-
-<!-- ============ Bottom tab bar (mobile / tablet) ============ -->
-<nav th:fragment="bottomNav" aria-label="Quick navigation"
-     class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-neutral-200 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur dark:border-neutral-800 dark:bg-black/95 lg:hidden">
-
-    <a href="/" data-tab="/" class="flex flex-col items-center gap-1 border-t-2 border-transparent pb-2 pt-2.5 text-[11px] text-neutral-500 aria-[current=page]:border-black aria-[current=page]:text-black dark:aria-[current=page]:border-white dark:aria-[current=page]:text-white">
-        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z" stroke-linejoin="round"/></svg>
-        Home
-    </a>
-
-    <a href="/cars" data-tab="/cars" class="flex flex-col items-center gap-1 border-t-2 border-transparent pb-2 pt-2.5 text-[11px] text-neutral-500 aria-[current=page]:border-black aria-[current=page]:text-black dark:aria-[current=page]:border-white dark:aria-[current=page]:text-white">
-        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
-        Browse
-    </a>
-
-    <a href="/saved" data-tab="/saved" class="flex flex-col items-center gap-1 border-t-2 border-transparent pb-2 pt-2.5 text-[11px] text-neutral-500 aria-[current=page]:border-black aria-[current=page]:text-black dark:aria-[current=page]:border-white dark:aria-[current=page]:text-white">
-        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20s-7.5-4.6-9-9.5C2 7.3 4.2 5 6.8 5c1.9 0 3.4 1 5.2 3 1.8-2 3.3-3 5.2-3C19.8 5 22 7.3 21 10.5 19.5 15.4 12 20 12 20Z" stroke-linejoin="round"/></svg>
-        Saved
-    </a>
-
-    <a href="/cart" data-tab="/cart" class="flex flex-col items-center gap-1 border-t-2 border-transparent pb-2 pt-2.5 text-[11px] text-neutral-500 aria-[current=page]:border-black aria-[current=page]:text-black dark:aria-[current=page]:border-white dark:aria-[current=page]:text-white">
-    <span class="relative">
-      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 8h14l-1 12H6L5 8ZM9 8V7a3 3 0 0 1 6 0v1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span class="absolute -right-2 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-black px-1 text-[10px] font-semibold leading-none text-white dark:bg-white dark:text-black">2</span>
-    </span>
-        Cart
-    </a>
-
-    <a href="/account" data-tab="/account" class="flex flex-col items-center gap-1 border-t-2 border-transparent pb-2 pt-2.5 text-[11px] text-neutral-500 aria-[current=page]:border-black aria-[current=page]:text-black dark:aria-[current=page]:border-white dark:aria-[current=page]:text-white">
-        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 9a8 8 0 0 1 16 0" stroke-linecap="round"/></svg>
-        Account
-    </a>
-</nav>
 
 </body>
 </html>

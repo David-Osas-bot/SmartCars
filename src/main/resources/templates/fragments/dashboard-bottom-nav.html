@@ -1,0 +1,53 @@
+<!--
+  Mobile bottom tab bar for the SIGNED-IN dashboard only (not the public landing page).
+  Place at: src/main/resources/templates/fragments/dashboard-bottom-nav.html
+  Use in a dashboard page:
+    <div th:replace="~{fragments/dashboard-bottom-nav :: bottomNav}"></div>
+  Also add  pb-16 lg:pb-0  to the dashboard <body> so content isn't hidden behind the bar.
+  Update the hrefs below to your real dashboard routes.
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav th:fragment="bottomNav" aria-label="Quick navigation"
+     class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-neutral-200 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur dark:border-neutral-800 dark:bg-black/95 lg:hidden">
+
+    <a href="/" data-tab="/" class="flex flex-col items-center gap-1 border-t-2 border-transparent pb-2 pt-2.5 text-[11px] text-neutral-500 aria-[current=page]:border-black aria-[current=page]:text-black dark:aria-[current=page]:border-white dark:aria-[current=page]:text-white">
+        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z" stroke-linejoin="round"/></svg>
+        Home
+    </a>
+
+    <a href="/cars" data-tab="/cars" class="flex flex-col items-center gap-1 border-t-2 border-transparent pb-2 pt-2.5 text-[11px] text-neutral-500 aria-[current=page]:border-black aria-[current=page]:text-black dark:aria-[current=page]:border-white dark:aria-[current=page]:text-white">
+        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
+        Browse
+    </a>
+
+    <a href="/saved" data-tab="/saved" class="flex flex-col items-center gap-1 border-t-2 border-transparent pb-2 pt-2.5 text-[11px] text-neutral-500 aria-[current=page]:border-black aria-[current=page]:text-black dark:aria-[current=page]:border-white dark:aria-[current=page]:text-white">
+        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 20s-7.5-4.6-9-9.5C2 7.3 4.2 5 6.8 5c1.9 0 3.4 1 5.2 3 1.8-2 3.3-3 5.2-3C19.8 5 22 7.3 21 10.5 19.5 15.4 12 20 12 20Z" stroke-linejoin="round"/></svg>
+        Saved
+    </a>
+
+    <a href="/cart" data-tab="/cart" class="flex flex-col items-center gap-1 border-t-2 border-transparent pb-2 pt-2.5 text-[11px] text-neutral-500 aria-[current=page]:border-black aria-[current=page]:text-black dark:aria-[current=page]:border-white dark:aria-[current=page]:text-white">
+        <span class="relative">
+            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8ZM9 8V7a3 3 0 0 1 6 0v1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="absolute -right-2 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-black px-1 text-[10px] font-semibold leading-none text-white dark:bg-white dark:text-black">2</span>
+        </span>
+        Cart
+    </a>
+
+    <a href="/account" data-tab="/account" class="flex flex-col items-center gap-1 border-t-2 border-transparent pb-2 pt-2.5 text-[11px] text-neutral-500 aria-[current=page]:border-black aria-[current=page]:text-black dark:aria-[current=page]:border-white dark:aria-[current=page]:text-white">
+        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 9a8 8 0 0 1 16 0" stroke-linecap="round"/></svg>
+        Account
+    </a>
+
+    <!-- Highlights the tab that matches the current page -->
+    <script>
+        document.querySelectorAll('[data-tab]').forEach(function (tab) {
+            if (tab.dataset.tab === location.pathname) tab.setAttribute('aria-current', 'page');
+        });
+    </script>
+</nav>
+
+</body>
+</html>

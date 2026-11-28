@@ -1,355 +1,378 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>SmartCars | Drive the extraordinary</title>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SmartCars | Drive the extraordinary</title>
+    <meta name="description" content="Nigeria’s premium car marketplace. Every car inspected, every price transparent, delivered to your door." />
 
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
-        <script th:src="@{/js/main.js}" defer></script>
+    <!-- Apply the saved theme before first paint so the page never flashes light in dark mode -->
+    <script>
+        try { if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark'); } catch (e) { /* ignore */ }
+    </script>
 
-        <!-- Tailwind Play CDN (for prototyping). In your Vite project, install Tailwind and move this config to tailwind.config.js -->
-        <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-        <script>
-            tailwind.config = {
-                darkMode: 'class',
-                theme: {
-                    extend: {
-                        fontFamily: {
-                            sans: ['Inter', 'system-ui', 'sans-serif'],
-                            display: ['"Instrument Serif"', 'Georgia', 'serif'],
-                        },
+    <!-- Inline favicon (stops the /favicon.ico 404 until you add a real one) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7'/%3E%3Ctext x='16' y='22' font-size='15' font-family='Arial' font-weight='700' text-anchor='middle' fill='white'%3ESC%3C/text%3E%3C/svg%3E" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+    <!-- Load ONCE. A second copy doubles every listener (e.g. the theme toggle cancels itself) -->
+    <script th:src="@{/js/main.js}" defer></script>
+
+    <!-- Tailwind Play CDN (for prototyping). For production, compile with the Tailwind CLI and link output.css instead -->
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            // Hover styles only on devices that can hover, so cards don't stay "zoomed" after a tap on phones
+            future: { hoverOnlyWhenSupported: true },
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['"Instrument Serif"', 'Georgia', 'serif'],
                     },
                 },
-            };
-        </script>
+            },
+        };
+    </script>
 
-        <style>
-            /* Hero entrance: one orchestrated sequence, disabled for reduced motion */
-            @keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
-            @keyframes drift { from { opacity: 0; transform: scale(1.06); } to { opacity: 1; transform: none; } }
-            .rise { opacity: 0; animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(var(--i, 0) * 120ms + 150ms); }
-            .drift { opacity: 0; animation: drift 1.6s cubic-bezier(.2,.7,.2,1) forwards; }
-            @media (prefers-reduced-motion: reduce) {
-                .rise, .drift { opacity: 1; animation: none; }
-                html { scroll-behavior: auto; }
-            }
+    <style>
+        html { scroll-behavior: smooth; scroll-padding-top: 7rem; } /* anchors clear the sticky header */
+        :focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 
-            /* Form fields (search bar) */
-            .field-label {
-                display: block;
-                margin-bottom: .5rem;
-                font-size: .75rem;
-                font-weight: 600;
-                letter-spacing: .15em;
-                text-transform: uppercase;
-                color: #525252;
-            }
-            .field-control {
-                height: 60px;
-                width: 100%;
-                border-radius: .5rem;
-                border: 1px solid #e5e5e5;
-                background: #fff;
-                padding: 0 1.25rem;
-                font-size: 1rem;
-                color: #171717;
-                transition: border-color .15s, box-shadow .15s;
-            }
-            .field-control::placeholder { color: #a3a3a3; }
-            .field-control:focus {
-                outline: none;
-                border-color: #000;
-                box-shadow: 0 0 0 3px rgb(0 0 0 / .1);
-            }
+        /* Hero entrance: one orchestrated sequence */
+        @keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+        @keyframes drift { from { opacity: 0; transform: scale(1.06); } to { opacity: 1; transform: none; } }
+        .rise { opacity: 0; animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(var(--i, 0) * 120ms + 150ms); }
+        .drift { opacity: 0; animation: drift 1.6s cubic-bezier(.2,.7,.2,1) forwards; }
 
-            .dark .field-label { color: #a3a3a3; }
-            .dark .field-control { background: #171717; border-color: #262626; color: #fff; }
-            .dark .field-control:focus { border-color: #fff; box-shadow: 0 0 0 3px rgb(255 255 255 / .2); }
+        /* Form fields (search bar) */
+        .field-label {
+            display: block;
+            margin-bottom: .5rem;
+            font-size: .75rem;
+            font-weight: 600;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: #525252;
+        }
+        .field-control {
+            height: 60px;
+            width: 100%;
+            border-radius: .5rem;
+            border: 1px solid #e5e5e5;
+            background: #fff;
+            padding: 0 1.25rem;
+            font-size: 1rem;
+            color: #171717;
+            transition: border-color .15s, box-shadow .15s;
+        }
+        .field-control::placeholder { color: #a3a3a3; }
+        .field-control:focus {
+            outline: none;
+            border-color: #000;
+            box-shadow: 0 0 0 3px rgb(0 0 0 / .1);
+        }
+        .dark .field-label { color: #a3a3a3; }
+        .dark .field-control { background: #171717; border-color: #262626; color: #fff; }
+        .dark .field-control:focus { border-color: #fff; box-shadow: 0 0 0 3px rgb(255 255 255 / .2); }
 
-            /* Carousel: hide the scrollbar but keep scrolling */
-            .no-scrollbar { scrollbar-width: none; }
-            .no-scrollbar::-webkit-scrollbar { display: none; }
+        /* Carousel: hide the scrollbar but keep scrolling */
+        .no-scrollbar { scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
 
-            /* Brand marquee: track holds two identical groups, so -50% loops seamlessly */
-            @keyframes marquee { to { transform: translateX(-50%); } }
-            .marquee-track { animation: marquee 40s linear infinite; }
-            .marquee:hover .marquee-track { animation-play-state: paused; }
+        /* Brand marquee: the track holds two identical groups, so -50% loops seamlessly */
+        @keyframes marquee { to { transform: translateX(-50%); } }
+        .marquee-track { animation: marquee 40s linear infinite; }
+        .marquee:hover .marquee-track { animation-play-state: paused; }
 
-            @media (prefers-reduced-motion: reduce) {
-                .rise, .drift { opacity: 1; animation: none; }
-                .marquee-track { animation: none; }
-                html { scroll-behavior: auto; }
-            }
-        </style>
-    </head>
+        /* Reduced motion: everything visible, nothing moving */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { transition-duration: .01ms !important; scroll-behavior: auto !important; }
+            .rise, .drift { opacity: 1; animation: none; }
+            .marquee-track { animation: none; }
+        }
+    </style>
+</head>
 
-    <body class="bg-white font-sans text-neutral-900 antialiased dark:bg-black dark:text-white pb-16 lg:pb-0">
-        <div th:replace="~{fragments/navbar :: announcement}"></div>
-        <div th:replace="~{fragments/navbar :: navbar}"></div>
+<body class="bg-white font-sans text-neutral-900 antialiased dark:bg-black dark:text-white">
+<a href="#main"
+   class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-black">
+    Skip to content
+</a>
 
-        <!-- Hero -->
-        <main>
-            <section class="relative isolate min-h-[calc(100vh-7.5rem)] overflow-hidden bg-black text-white">
-                <!-- Replace with your own image path -->
-                <img src="/images/categories/hero-car.jpg" fetchpriority="high" alt="Black Aston Martin DB12 in a dark studio"
-                     class="drift absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center] grayscale"
-                     onerror="this.style.display='none'" />
-                <div class="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/70 to-transparent"></div>
-                <div class="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-black to-transparent"></div>
+<div th:replace="~{fragments/navbar :: announcement}"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
-                <div class="mx-auto flex min-h-[inherit] max-w-7xl flex-col justify-center px-6 pb-40 pt-20">
-                    <p class="rise text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-300" style="--i:0">Featured · 2024 Aston Martin</p>
+<main id="main">
 
-                    <h1 class="rise mt-8 font-display text-[clamp(2.75rem,9vw,7.5rem)] leading-[0.95] tracking-tight" style="--i:1">
-                        Drive the<br /><em>extraordinary.</em>
-                    </h1>
+    <!-- Hero -->
+    <section class="relative isolate min-h-[calc(100svh-7.5rem)] overflow-hidden bg-black text-white">
+        <img src="/images/categories/hero-car.jpg" fetchpriority="high" alt="Black Aston Martin DB12 in a dark studio"
+             class="drift absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center] grayscale"
+             onerror="this.style.display='none'" />
+        <div class="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/70 to-transparent"></div>
+        <div class="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-black to-transparent"></div>
 
-                    <p class="rise mt-8 max-w-[34rem] text-lg leading-relaxed text-neutral-300 md:text-xl" style="--i:2">
-                        Aston Martin DB12. 671 hp, hand-built, delivered to your door with a 150-point inspection report.
-                    </p>
+        <div class="mx-auto flex min-h-[inherit] max-w-7xl flex-col justify-center px-6 pb-40 pt-20">
+            <p class="rise text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-300" style="--i:0">Featured · 2024 Aston Martin</p>
 
-                    <div class="rise mt-10 flex flex-wrap gap-4" style="--i:3">
-                        <a href="#" class="inline-flex items-center gap-3 rounded-lg bg-white px-8 py-4 text-lg font-medium text-black transition hover:bg-neutral-200">
-                            Explore the DB12
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </a>
-                        <a href="#" class="inline-flex items-center rounded-lg border border-white/40 px-8 py-4 text-lg font-medium text-white transition hover:border-white hover:bg-white hover:text-black">Browse all cars</a>
-                    </div>
+            <h1 class="rise mt-8 font-display text-[clamp(2.75rem,9vw,7.5rem)] leading-[0.95] tracking-tight" style="--i:1">
+                Drive the<br /><em>extraordinary.</em>
+            </h1>
 
-                    <dl class="rise mt-16 grid max-w-2xl grid-cols-3 gap-4 sm:gap-8 border-t border-white/20 pt-8" style="--i:4">
-                        <div><dt class="sr-only">Cars delivered</dt><dd class="font-display text-3xl sm:text-4xl md:text-5xl">1,200+</dd><p class="mt-1 text-sm text-neutral-400">Cars delivered</p></div>
-                        <div><dt class="sr-only">Customer rating</dt><dd class="font-display text-3xl sm:text-4xl md:text-5xl">4.9/5</dd><p class="mt-1 text-sm text-neutral-400">Customer rating</p></div>
-                        <div><dt class="sr-only">Average delivery</dt><dd class="font-display text-3xl sm:text-4xl md:text-5xl">48h</dd><p class="mt-1 text-sm text-neutral-400">Average delivery</p></div>
-                    </dl>
-                </div>
-            </section>
+            <p class="rise mt-8 max-w-[34rem] text-lg leading-relaxed text-neutral-300 md:text-xl" style="--i:2">
+                Aston Martin DB12. 671 hp, hand-built, delivered to your door with a 150-point inspection report.
+            </p>
 
-
-            <!-- Search -->
-            <section aria-labelledby="searchTitle" class="relative z-10 -mt-[4.8rem]">
-                <div class="mx-auto max-w-7xl px-6">
-                    <form id="searchForm" action="/cars" method="get"
-                          class="rounded-xl bg-white p-5 shadow-2xl ring-1 ring-black/5 dark:bg-neutral-950 dark:ring-white/10">
-                        <h2 id="searchTitle" class="sr-only">Search cars</h2>
-
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-[repeat(4,minmax(0,1fr))_auto] lg:items-end">
-                            <div>
-                                <label for="searchBrand" class="field-label">Brand</label>
-                                <select id="searchBrand" name="brand" class="field-control">
-                                    <option value="">All brands</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label for="searchModel" class="field-label">Model</label>
-                                <input id="searchModel" name="model" type="text" placeholder="e.g. Land Cruiser"
-                                       autocomplete="off" class="field-control" />
-                            </div>
-
-                            <div>
-                                <label for="searchPrice" class="field-label">Price range</label>
-                                <select id="searchPrice" name="price" class="field-control">
-                                    <option value="">Any price</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label for="searchYear" class="field-label">Year from</label>
-                                <select id="searchYear" name="year" class="field-control">
-                                    <option value="">Any year</option>
-                                </select>
-                            </div>
-
-                            <button type="submit"
-                                    class="inline-flex h-[60px] items-center justify-center gap-2.5 rounded-lg bg-black px-8 text-lg font-medium text-white transition hover:bg-neutral-800 md:col-span-2 lg:col-span-1 dark:bg-white dark:text-black dark:hover:bg-neutral-200">
-                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                    <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/>
-                                </svg>
-                                Search
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </section>
-
-            <!-- Browse by body type -->
-            <section aria-labelledby="bodyTypeTitle" class="mx-auto max-w-7xl px-6 py-24">
-                <div class="flex items-end justify-between gap-6">
-                    <div>
-                        <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Browse by body type</p>
-                        <h2 id="bodyTypeTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">Find your shape</h2>
-                    </div>
-                    <a href="/auth/sign-in?next=/cars"
-                       class="hidden pb-2 text-lg font-medium underline decoration-2 underline-offset-8 transition hover:opacity-70 sm:block">
-                        All categories
-                    </a>
-                </div>
-
-                <ul id="bodyTypes" class="mt-12 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4"></ul>
-            </section>
-
-            <!-- New arrivals -->
-            <section aria-labelledby="arrivalsTitle" class="mx-auto max-w-7xl px-6 pb-24">
-                <div class="flex items-end justify-between gap-6">
-                    <div>
-                        <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Just landed</p>
-                        <h2 id="arrivalsTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">New arrivals</h2>
-                    </div>
-
-                    <div class="flex gap-2">
-                        <button id="arrivalsPrev" type="button" aria-label="Previous cars"
-                                class="flex h-11 w-11 items-center justify-center rounded-full border border-neutral-200 bg-white text-black shadow-sm transition hover:bg-neutral-100 disabled:pointer-events-none disabled:text-neutral-400 dark:border-neutral-800 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:disabled:text-neutral-600">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                        <button id="arrivalsNext" type="button" aria-label="Next cars"
-                                class="flex h-11 w-11 items-center justify-center rounded-full border border-neutral-200 bg-white text-black shadow-sm transition hover:bg-neutral-100 disabled:pointer-events-none disabled:text-neutral-400 dark:border-neutral-800 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:disabled:text-neutral-600">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                    </div>
-                </div>
-
-                <ul id="arrivalsTrack" class="no-scrollbar -mx-4 -mb-8 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto scroll-smooth px-4 pb-10 pt-4"></ul>
-            </section>
-
-            <!-- Brand marquee -->
-            <section aria-label="Brands we carry" class="marquee overflow-hidden border-y border-neutral-200 dark:border-neutral-800">
-                <div id="brandMarquee" class="marquee-track flex w-max py-10"></div>
-            </section>
-
-
-            <!-- Best sellers -->
-            <section aria-labelledby="bestSellersTitle" class="mx-auto max-w-7xl px-6 pb-24">
-                <div class="flex items-end justify-between gap-6">
-                    <div>
-                        <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Most loved</p>
-                        <h2 id="bestSellersTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">Best sellers</h2>
-                    </div>
-                    <a href="auth/sign-in?next=/cars"
-                       class="pb-2 text-lg font-medium underline decoration-2 underline-offset-8 transition hover:opacity-70">
-                        See all
-                    </a>
-                </div>
-
-                <ul id="bestSellersGrid" class="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"></ul>
-            </section>
-
-            <!-- Why SmartCars -->
-            <section aria-labelledby="whyTitle" class="bg-neutral-100 dark:bg-neutral-900">
-                <div class="mx-auto max-w-7xl px-6 py-24">
-                    <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Why SmartCars</p>
-                    <h2 id="whyTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">
-                        Buying a car, <em>reimagined.</em>
-                    </h2>
-
-                    <!-- gap-px on a tinted background draws the dividers at every breakpoint -->
-                    <ul id="whyGrid"
-                        class="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-neutral-200 bg-neutral-200 sm:grid-cols-2 lg:grid-cols-4 dark:border-neutral-800 dark:bg-neutral-800"></ul>
-                </div>
-            </section>
-
-            <!-- Owners speak -->
-            <section aria-labelledby="reviewsTitle" class="mx-auto max-w-7xl px-6 py-24">
-                <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Owners speak</p>
-                <h2 id="reviewsTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">Trusted by 1,200+ drivers</h2>
-
-                <ul id="reviewsGrid" class="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3"></ul>
-            </section>
-
-
-            <!-- Financing & trade-in -->
-            <section aria-labelledby="financeTitle" class="mx-auto max-w-7xl px-6 py-24">
-                <div class="grid grid-cols-1 overflow-hidden rounded-2xl bg-[#111] text-white ring-1 ring-black/5 lg:min-h-[32rem] lg:grid-cols-2 dark:bg-neutral-900 dark:ring-white/10">
-
-                    <!-- Copy -->
-                    <div class="px-8 py-14 sm:px-12 lg:p-[4.375rem]">
-                        <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-400">Financing &amp; trade-in</p>
-
-                        <h2 id="financeTitle" class="mt-6 font-display text-5xl leading-[1.05] tracking-tight md:text-6xl">
-                            Own it from ₦1,850,000/mo
-                        </h2>
-
-                        <p class="mt-6 max-w-md text-lg leading-relaxed text-neutral-300">
-                            Trade in your current car, put 30% down and spread the rest over up to 60 months.
-                        </p>
-
-                        <div class="mt-9 flex flex-wrap gap-4">
-                            <a href="/finance"
-                               class="inline-flex h-[50px] items-center rounded-lg bg-white px-8 text-base font-medium text-black transition hover:bg-neutral-200">
-                                Calculate payments
-                            </a>
-                            <a href="/trade-in"
-                               class="inline-flex h-[50px] items-center rounded-lg border border-white/40 px-8 text-base font-medium text-white transition hover:border-white hover:bg-white hover:text-black">
-                                Value my car
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Photo -->
-                    <div class="relative min-h-[16rem] bg-neutral-800">
-                        <img src="/images/categories/car-interior.jpg" alt="Black leather interior of a luxury car" loading="lazy"
-                             class="absolute inset-0 h-full w-full object-cover grayscale"
-                             onerror="this.style.display='none'" />
-                    </div>
-                </div>
-            </section>
-
-
-            <!-- FAQ -->
-            <section aria-labelledby="faqTitle" class="mx-auto max-w-7xl px-6 py-24">
-                <div class="grid grid-cols-1 gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
-
-                <!-- Left: intro + newsletter -->
-                    <div>
-                        <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Questions</p>
-                        <h2 id="faqTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">Good to know</h2>
-                        <p class="mt-6 max-w-md text-lg leading-relaxed text-neutral-600 dark:text-neutral-400">
-                            Can’t find your answer? Visit the
-                            <a href="/help" class="underline underline-offset-4 transition hover:text-black dark:hover:text-white">help centre</a>
-                            or chat with our team.
-                        </p>
-
-                        <form data-newsletter novalidate
-                              class="mt-10 rounded-xl border border-neutral-200 bg-white p-7 dark:border-neutral-800 dark:bg-neutral-950">
-                            <h3 class="text-xl font-medium">Weekly price drops, in your inbox</h3>
-                            <p class="mt-1 text-neutral-600 dark:text-neutral-400">No spam. Unsubscribe any time.</p>
-
-                            <div class="mt-5 flex flex-col gap-2.5 sm:flex-row">
-                                <label for="newsletterEmail" class="sr-only">Email address</label>
-                                <input id="newsletterEmail" name="email" type="email" required autocomplete="email" placeholder="you@email.com"
-                                       class="h-[55px] w-full min-w-0 sm:flex-1 rounded-lg border border-neutral-200 bg-white px-4 text-base shadow-sm placeholder:text-neutral-400 focus:border-black focus:outline-none focus:ring-2 focus:ring-black/10 dark:border-neutral-800 dark:bg-neutral-900 dark:focus:border-white dark:focus:ring-white/20" />
-                                <button type="submit"
-                                        class="h-[55px] shrink-0 rounded-lg bg-black px-6 text-base font-medium text-white transition hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200">
-                                    Subscribe
-                                </button>
-                            </div>
-
-                            <p data-newsletter-msg role="status" aria-live="polite"
-                               class="mt-3 hidden text-sm text-neutral-600 data-[error=true]:text-red-600 dark:text-neutral-400"></p>
-                        </form>
-                    </div>
-
-                    <!-- Right: accordion (filled by main.js) -->
-                    <ul id="faqList" class="self-start border-t border-neutral-200 dark:border-neutral-800"></ul>
-                </div>
-            </section>
-        </main>
-
-        <!-- Cookie banner -->
-        <aside id="cookie" role="dialog" aria-live="polite" aria-label="Cookie consent"
-               class="fixed inset-x-4 bottom-20 z-50 mx-auto hidden max-w-3xl translate-y-6 rounded-xl bg-white p-5 text-neutral-900 opacity-0 shadow-2xl transition duration-500 lg:bottom-6">
-            <h2 class="flex items-center gap-2 text-lg font-medium">We use cookies <span aria-hidden="true">🍪</span></h2>
-            <p class="mt-1.5 text-sm text-neutral-600">To remember your cart, saved cars and preferences, and to understand how SmartCars is used.</p>
-            <div class="mt-4 flex flex-wrap gap-3">
-                <button data-consent="all" class="rounded-lg bg-black px-4 py-2.5 text-sm font-medium text-white transition hover:bg-neutral-800">Accept all</button>
-                <button data-consent="essential" class="rounded-lg border border-neutral-200 px-4 py-2.5 text-sm font-medium transition hover:bg-neutral-100">Essential only</button>
+            <div class="rise mt-10 flex flex-wrap gap-4" style="--i:3">
+                <a href="/auth/sign-in?next=%2Fcars%2F1"
+                   class="inline-flex items-center gap-3 rounded-lg bg-white px-8 py-4 text-lg font-medium text-black transition hover:bg-neutral-200">
+                    Explore the DB12
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a href="/cars"
+                   class="inline-flex items-center rounded-lg border border-white/40 px-8 py-4 text-lg font-medium text-white transition hover:border-white hover:bg-white hover:text-black">
+                    Browse all cars
+                </a>
             </div>
-        </aside>
 
-        <div th:replace="~{fragments/footer :: footer}"></div>
+            <dl class="rise mt-16 grid max-w-2xl grid-cols-3 gap-4 border-t border-white/20 pt-8 sm:gap-8" style="--i:4">
+                <div><dt class="sr-only">Cars delivered</dt><dd class="font-display text-3xl sm:text-4xl md:text-5xl">1,200+</dd><p class="mt-1 text-sm text-neutral-400">Cars delivered</p></div>
+                <div><dt class="sr-only">Customer rating</dt><dd class="font-display text-3xl sm:text-4xl md:text-5xl">4.9/5</dd><p class="mt-1 text-sm text-neutral-400">Customer rating</p></div>
+                <div><dt class="sr-only">Average delivery</dt><dd class="font-display text-3xl sm:text-4xl md:text-5xl">48h</dd><p class="mt-1 text-sm text-neutral-400">Average delivery</p></div>
+            </dl>
+        </div>
+    </section>
 
-        <div th:replace="~{fragments/navbar :: bottomNav}"></div>
-    </body>
+    <!-- Search -->
+    <section aria-labelledby="searchTitle" class="relative z-10 -mt-[4.8rem]">
+        <div class="mx-auto max-w-7xl px-6">
+            <form id="searchForm" action="/cars" method="get"
+                  class="rounded-xl bg-white p-5 shadow-2xl ring-1 ring-black/5 dark:bg-neutral-950 dark:ring-white/10">
+                <h2 id="searchTitle" class="sr-only">Search cars</h2>
+
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-[repeat(4,minmax(0,1fr))_auto] lg:items-end">
+                    <div>
+                        <label for="searchBrand" class="field-label">Brand</label>
+                        <select id="searchBrand" name="brand" class="field-control">
+                            <option value="">All brands</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="searchModel" class="field-label">Model</label>
+                        <input id="searchModel" name="model" type="text" placeholder="e.g. Land Cruiser"
+                               autocomplete="off" class="field-control" />
+                    </div>
+
+                    <div>
+                        <label for="searchPrice" class="field-label">Price range</label>
+                        <select id="searchPrice" name="price" class="field-control">
+                            <option value="">Any price</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="searchYear" class="field-label">Year from</label>
+                        <select id="searchYear" name="year" class="field-control">
+                            <option value="">Any year</option>
+                        </select>
+                    </div>
+
+                    <button type="submit"
+                            class="inline-flex h-[60px] items-center justify-center gap-2.5 rounded-lg bg-black px-8 text-lg font-medium text-white transition hover:bg-neutral-800 md:col-span-2 lg:col-span-1 dark:bg-white dark:text-black dark:hover:bg-neutral-200">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/>
+                        </svg>
+                        Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Browse by body type -->
+    <section aria-labelledby="bodyTypeTitle" class="mx-auto max-w-7xl px-6 py-24">
+        <div class="flex items-end justify-between gap-6">
+            <div>
+                <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Browse by body type</p>
+                <h2 id="bodyTypeTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">Find your shape</h2>
+            </div>
+            <a href="/auth/sign-in?next=%2Fcars"
+               class="hidden pb-2 text-lg font-medium underline decoration-2 underline-offset-8 transition hover:opacity-70 sm:block">
+                All categories
+            </a>
+        </div>
+
+        <ul id="bodyTypes" class="mt-12 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4"></ul>
+
+        <!-- Phones: the header link above is hidden, so repeat it here -->
+        <a href="/auth/sign-in?next=%2Fcars"
+           class="mt-8 inline-block text-lg font-medium underline decoration-2 underline-offset-8 sm:hidden">
+            All categories
+        </a>
+    </section>
+
+    <!-- New arrivals -->
+    <section aria-labelledby="arrivalsTitle" class="mx-auto max-w-7xl px-6 pb-24">
+        <div class="flex items-end justify-between gap-6">
+            <div>
+                <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Just landed</p>
+                <h2 id="arrivalsTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">New arrivals</h2>
+            </div>
+
+            <div class="flex shrink-0 gap-2">
+                <button id="arrivalsPrev" type="button" aria-label="Previous cars"
+                        class="flex h-11 w-11 items-center justify-center rounded-full border border-neutral-200 bg-white text-black shadow-sm transition hover:bg-neutral-100 disabled:pointer-events-none disabled:text-neutral-400 dark:border-neutral-800 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:disabled:text-neutral-600">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button id="arrivalsNext" type="button" aria-label="Next cars"
+                        class="flex h-11 w-11 items-center justify-center rounded-full border border-neutral-200 bg-white text-black shadow-sm transition hover:bg-neutral-100 disabled:pointer-events-none disabled:text-neutral-400 dark:border-neutral-800 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:disabled:text-neutral-600">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- -mx-4/px-4 gives hover lift and shadows room; tabindex lets keyboard users scroll it -->
+        <ul id="arrivalsTrack" tabindex="0" aria-label="New arrivals"
+            class="no-scrollbar -mx-4 -mb-8 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto scroll-smooth px-4 pb-10 pt-4"></ul>
+    </section>
+
+    <!-- Brand marquee -->
+    <section aria-label="Brands we carry" class="marquee overflow-hidden border-y border-neutral-200 dark:border-neutral-800">
+        <div id="brandMarquee" class="marquee-track flex w-max py-10"></div>
+    </section>
+
+    <!-- Best sellers -->
+    <section aria-labelledby="bestSellersTitle" class="mx-auto max-w-7xl px-6 py-24">
+        <div class="flex items-end justify-between gap-6">
+            <div>
+                <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Most loved</p>
+                <h2 id="bestSellersTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">Best sellers</h2>
+            </div>
+            <a href="/auth/sign-in?next=%2Fcars"
+               class="shrink-0 pb-2 text-lg font-medium underline decoration-2 underline-offset-8 transition hover:opacity-70">
+                See all
+            </a>
+        </div>
+
+        <ul id="bestSellersGrid" class="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"></ul>
+    </section>
+
+    <!-- Why SmartCars -->
+    <section aria-labelledby="whyTitle" class="bg-neutral-100 dark:bg-neutral-900">
+        <div class="mx-auto max-w-7xl px-6 py-24">
+            <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Why SmartCars</p>
+            <h2 id="whyTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">
+                Buying a car, <em>reimagined.</em>
+            </h2>
+
+            <!-- gap-px on a tinted background draws the dividers at every breakpoint -->
+            <ul id="whyGrid"
+                class="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-neutral-200 bg-neutral-200 sm:grid-cols-2 lg:grid-cols-4 dark:border-neutral-800 dark:bg-neutral-800"></ul>
+        </div>
+    </section>
+
+    <!-- Owners speak -->
+    <section aria-labelledby="reviewsTitle" class="mx-auto max-w-7xl px-6 py-24">
+        <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Owners speak</p>
+        <h2 id="reviewsTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">Trusted by 1,200+ drivers</h2>
+
+        <ul id="reviewsGrid" class="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3"></ul>
+    </section>
+
+    <!-- Financing & trade-in -->
+    <section aria-labelledby="financeTitle" class="mx-auto max-w-7xl px-6 py-24">
+        <div class="grid grid-cols-1 overflow-hidden rounded-2xl bg-[#111] text-white ring-1 ring-black/5 lg:min-h-[32rem] lg:grid-cols-2 dark:bg-neutral-900 dark:ring-white/10">
+
+            <!-- Copy -->
+            <div class="px-8 py-14 sm:px-12 lg:p-[4.375rem]">
+                <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-400">Financing &amp; trade-in</p>
+
+                <h2 id="financeTitle" class="mt-6 break-words font-display text-4xl leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
+                    Own it from ₦1,850,000/mo
+                </h2>
+
+                <p class="mt-6 max-w-md text-lg leading-relaxed text-neutral-300">
+                    Trade in your current car, put 30% down and spread the rest over up to 60 months.
+                </p>
+
+                <div class="mt-9 flex flex-wrap gap-4">
+                    <a href="/finance"
+                       class="inline-flex h-[50px] items-center rounded-lg bg-white px-8 text-base font-medium text-black transition hover:bg-neutral-200">
+                        Calculate payments
+                    </a>
+                    <a href="/trade-in"
+                       class="inline-flex h-[50px] items-center rounded-lg border border-white/40 px-8 text-base font-medium text-white transition hover:border-white hover:bg-white hover:text-black">
+                        Value my car
+                    </a>
+                </div>
+            </div>
+
+            <!-- Photo -->
+            <div class="relative min-h-[16rem] bg-neutral-800">
+                <img src="/images/categories/car-interior.jpg" alt="Black leather interior of a luxury car" loading="lazy"
+                     class="absolute inset-0 h-full w-full object-cover grayscale"
+                     onerror="this.style.display='none'" />
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section aria-labelledby="faqTitle" class="mx-auto max-w-7xl px-6 py-24">
+        <div class="grid grid-cols-1 gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
+
+            <!-- Left: intro + newsletter -->
+            <div>
+                <p class="text-[13px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-neutral-400">Questions</p>
+                <h2 id="faqTitle" class="mt-4 font-display text-5xl tracking-tight md:text-6xl">Good to know</h2>
+                <p class="mt-6 max-w-md text-lg leading-relaxed text-neutral-600 dark:text-neutral-400">
+                    Can’t find your answer? Visit the
+                    <a href="/help" class="underline underline-offset-4 transition hover:text-black dark:hover:text-white">help centre</a>
+                    or chat with our team.
+                </p>
+
+                <form data-newsletter novalidate
+                      class="mt-10 rounded-xl border border-neutral-200 bg-white p-7 dark:border-neutral-800 dark:bg-neutral-950">
+                    <h3 class="text-xl font-medium">Weekly price drops, in your inbox</h3>
+                    <p class="mt-1 text-neutral-600 dark:text-neutral-400">No spam. Unsubscribe any time.</p>
+
+                    <div class="mt-5 flex flex-col gap-2.5 sm:flex-row">
+                        <label for="newsletterEmail" class="sr-only">Email address</label>
+                        <input id="newsletterEmail" name="email" type="email" required autocomplete="email" placeholder="you@email.com"
+                               class="h-[55px] w-full min-w-0 rounded-lg border border-neutral-200 bg-white px-4 text-base shadow-sm placeholder:text-neutral-400 focus:border-black focus:outline-none focus:ring-2 focus:ring-black/10 sm:flex-1 dark:border-neutral-800 dark:bg-neutral-900 dark:focus:border-white dark:focus:ring-white/20" />
+                        <button type="submit"
+                                class="h-[55px] shrink-0 rounded-lg bg-black px-6 text-base font-medium text-white transition hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200">
+                            Subscribe
+                        </button>
+                    </div>
+
+                    <p data-newsletter-msg role="status" aria-live="polite"
+                       class="mt-3 hidden text-sm text-neutral-600 data-[error=true]:text-red-600 dark:text-neutral-400"></p>
+                </form>
+            </div>
+
+            <!-- Right: accordion (filled by main.js) -->
+            <ul id="faqList" class="self-start border-t border-neutral-200 dark:border-neutral-800"></ul>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!-- Cookie banner (no bottom tab bar on this page, so it sits close to the bottom edge) -->
+<aside id="cookie" role="dialog" aria-label="Cookie consent"
+       class="fixed inset-x-4 bottom-4 z-50 mx-auto hidden max-w-3xl translate-y-6 rounded-xl bg-white p-5 text-neutral-900 opacity-0 shadow-2xl transition duration-500 sm:bottom-6">
+    <h2 class="flex items-center gap-2 text-lg font-medium">We use cookies <span aria-hidden="true">🍪</span></h2>
+    <p class="mt-1.5 text-sm text-neutral-600">To remember your cart, saved cars and preferences, and to understand how SmartCars is used.</p>
+    <div class="mt-4 flex flex-wrap gap-3">
+        <button data-consent="all" class="rounded-lg bg-black px-4 py-2.5 text-sm font-medium text-white transition hover:bg-neutral-800">Accept all</button>
+        <button data-consent="essential" class="rounded-lg border border-neutral-200 px-4 py-2.5 text-sm font-medium transition hover:bg-neutral-100">Essential only</button>
+    </div>
+</aside>
+</body>
 </html>
